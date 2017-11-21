@@ -1,4 +1,0 @@
-首先测试以下
-firsttest
-utf-8
-this is my first test
