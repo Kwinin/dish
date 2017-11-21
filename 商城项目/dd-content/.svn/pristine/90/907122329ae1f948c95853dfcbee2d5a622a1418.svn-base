@@ -1,0 +1,11 @@
+redis.host=39.106.35.68
+redis.port1=7001
+redis.port2=7002
+redis.port3=7003
+redis.port4=7004
+redis.port5=7005
+redis.port6=7006
+redis.timeout=3000
+redis.sockettimeout=3000
+redis.maxAttempts=200
+redis.pass=kwininredis123

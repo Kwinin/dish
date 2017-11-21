@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cj.ttshop.dao.TbItemMapperCustom">
+
+
+	<select id="selectByPager" resultType="com.cj.ttshop.vo.TbItemCustom">
+		SELECT
+
+		i.id,
+		i.title,
+		i.sell_point as sellPoint,
+		i.price,
+		i.num,
+		i.barcode,
+		i.image,
+		i.cid,
+		CASE i.status
+		WHEN 1 THEN '正常'
+		WHEN 2 THEN '下架'
+		WHEN 3 THEN
+		'删除'
+		ELSE '未知'
+		END AS statusName,
+		i.created,
+		i.updated,
+		c.name AS catName
+
+		FROM tb_item i LEFT JOIN tb_item_cat c
+
+		ON i.cid = c.id
+		WHERE i.status !=
+		3
+		<if test="query != null and query.title != null and query.title != ''">
+			and i.title like '%${query.title}%'
+		</if>
+		<if test="query != null and query.status != null and query.status != 0">
+			and i.status = #{query.status}
+		</if>
+		<if test="query != null and query.cid != null and query.cid != 0">
+			and c.id = #{query.cid}
+		</if>
+
+
+		<choose>
+			<when test="order != null and order.sort != null and order.order != null">
+				ORDER BY ${order.sort} ${order.order}
+
+			</when>
+			<otherwise>
+				ORDER BY i.id DESC
+			</otherwise>
+		</choose>
+
+		limit #{pager.offset}, #{pager.rows}
+	</select>
+
+	<select id="selectCount" resultType="_long">
+		select count(1)
+
+		FROM tb_item i
+		LEFT JOIN tb_item_cat c
+		ON i.cid = c.id
+		WHERE i.status != 3
+
+		<if test="query != null and query.title != null and query.title != ''">
+			and i.title like '%${query.title}%'
+		</if>
+		<if test="query != null and query.status != null and query.status != 0">
+			and i.status = #{query.status}
+		</if>
+		<if test="query != null and query.cid != null and query.cid != 0">
+			and c.id = #{query.cid}
+		</if>
+
+	</select>
+
+	<select id="selectSearchItemList" resultType="com.cj.ttshop.vo.TbSearchItemCustom">
+
+		select
+
+		i.id,
+		i.title,
+		i.sell_point as sellPoint,
+		i.price,
+		i.image,
+		c.name as catName,
+		d.item_desc as description
+
+		from tb_item i
+		left join tb_item_cat c on i.cid = c.id
+		left join
+		tb_item_desc d on i.id = d.item_id
+
+		where i.status = 1
+
+		order by i.id desc
+
+	</select>
+
+	<select id="getSearchItemById" resultType="com.cj.ttshop.vo.TbSearchItemCustom">
+	
+		select
+
+		i.id,
+		i.title,
+		i.sell_point as sellPoint,
+		i.price,
+		i.image,
+		c.name as catName,
+		d.item_desc as description
+
+		from tb_item i
+		left join tb_item_cat c on i.cid = c.id
+		left join
+		tb_item_desc d on i.id = d.item_id
+
+		where i.status = 1
+
+		and i.id=#{itemId}
+
+	</select>
+</mapper>
